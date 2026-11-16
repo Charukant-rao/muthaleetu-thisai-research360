@@ -250,6 +250,14 @@
 .rs-who small{color:var(--muted);font-size:12.5px}
 .rs-rb{display:grid;grid-template-columns:64px 1fr;gap:8px 12px;align-items:center;font-size:12.5px;font-weight:700;color:var(--muted);margin:6px 0 10px}
 .rs-acts{margin:14px 0 0;padding-left:20px;display:grid;gap:8px;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.rs-pw{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;font-size:11.5px;font-weight:700;white-space:nowrap;flex:none}
+.rs-pw span{color:var(--muted);letter-spacing:.02em}
+.rs-pw .wl{height:15px;width:auto;display:block}
+.rs-pw:hover{border-color:#00bab2}
+.rs-pw.lg{padding:6px 12px}
+.rs-pw.lg .wl{height:18px}
+.rs-hr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rs-mpw{display:flex;justify-content:flex-end;border-top:1px solid var(--line);margin-top:6px;padding:8px 4px 2px}
 #rs-menu{position:fixed;z-index:60;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;width:330px;display:none}
 #rs-menu.open{display:block}
 #rs-menu button{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:center;width:100%;text-align:left;border:0;background:transparent;color:inherit;font:inherit;padding:10px;border-radius:12px;cursor:pointer}
@@ -271,6 +279,9 @@ const RS_TABS=[
   {r:"mf-compare",cls:"t3",en:"MF Compare",ta:"MF ஒப்பீடு",d:"Up to 5 funds side by side with overlap",ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="16" rx="2"/><rect x="14" y="4" width="7" height="16" rx="2"/></svg>'},
   {r:"portfolio-iq",cls:"t4",en:"Portfolio IQ",ta:"போர்ட்ஃபோலியோ IQ",d:"Health check of your fund holdings",ic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg>'}
 ];
+// Wylth logo (wylth.com/images/logo.svg); the wordmark uses currentColor so it follows the theme.
+const RS_WYLTH=`<svg class="wl" role="img" aria-label="Wylth" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 150.739 39.997"><g><path d="M233.708,34.037a1,1,0,0,1-.089.321.2.2,0,0,1-.179.1.186.186,0,0,1-.177-.1,1.354,1.354,0,0,1-.089-.321l-3.771-15.9a5.211,5.211,0,0,0-1.423-2.847,3.556,3.556,0,0,0-2.455-.889,3.488,3.488,0,0,0-2.437.889,5.47,5.47,0,0,0-1.44,2.882l-3.631,15.9c-.036.156-.135.426-.34.4-.172-.021-.236-.259-.265-.4l-4.257-21.1h-4.614l4.851,22.487a4.785,4.785,0,0,0,1.494,2.686,3.979,3.979,0,0,0,2.668.942,3.885,3.885,0,0,0,2.543-.924,4.583,4.583,0,0,0,1.513-2.526l3.772-16.509a.443.443,0,0,1,.071-.177.1.1,0,0,1,.071-.036.091.091,0,0,1,.085.071,1.215,1.215,0,0,1,.042.146c1.252,5.451,2.572,10.886,3.859,16.329a4.872,4.872,0,0,0,1.529,2.668,3.971,3.971,0,0,0,2.634.924,3.745,3.745,0,0,0,2.651-.978,5.2,5.2,0,0,0,1.44-2.757l4.584-22.345h-4.576Z" transform="translate(-164.589 -10.24)" fill="currentColor"/><rect width="4.447" height="26.06" transform="translate(101.245 2.734)" fill="currentColor"/><path d="M520.034,12.888h-4.447v7.864h-3.308v3.772h3.308V31.8a8.22,8.22,0,0,0,.818,3.735,5.858,5.858,0,0,0,2.438,2.544,8.09,8.09,0,0,0,4,.907,7.969,7.969,0,0,0,1.921-.248,5.729,5.729,0,0,0,1.671-.676v-4.02a4.577,4.577,0,0,1-1.511.693,6.566,6.566,0,0,1-1.691.231,3.187,3.187,0,0,1-2.33-.853,3.281,3.281,0,0,1-.872-2.455V24.523h6.4V20.752h-6.4Z" transform="translate(-404.309 -10.172)" fill="currentColor"/><path d="M613.62,24.966a6.912,6.912,0,0,0-2.722-3.059,8.488,8.488,0,0,0-4.465-1.086,8.288,8.288,0,0,0-3.577.764,7.58,7.58,0,0,0-1.723,1.147V12.975h-4.447v26.06h4.447V30.214a5.982,5.982,0,0,1,.585-2.7,4.592,4.592,0,0,1,1.638-1.85,4.333,4.333,0,0,1,2.4-.676,3.9,3.9,0,0,1,2.4.73,4.417,4.417,0,0,1,1.459,1.885,6.586,6.586,0,0,1,.479,2.545v8.912h4.447V29.679a11.056,11.056,0,0,0-.924-4.713" transform="translate(-470.925 -10.24)" fill="currentColor"/><path d="M392.811,59.052v2.56a5.657,5.657,0,0,1-.552,2.526,4.613,4.613,0,0,1-1.548,1.8,4.2,4.2,0,0,1-2.313.658,3.876,3.876,0,0,1-3.167-1.334,5.3,5.3,0,0,1-1.1-3.469V50.2h-4.376v8.619a14,14,0,0,0,.462,3.914,8.271,8.271,0,0,0,2.277,3.825,7.55,7.55,0,0,0,7.863,1.263,6.7,6.7,0,0,0,2.49-2.064l.036,5.6a9.426,9.426,0,0,1-.587,3.9,4.684,4.684,0,0,1-1.726,2.1c-3.149,2.05-7.272-.2-9.268-2.834a6.091,6.091,0,0,1-.374-.528c-.374.338-.747.694-1.121,1.05a8.9,8.9,0,0,0,2.081,2.437,9.6,9.6,0,0,0,9.642,1.423,8.965,8.965,0,0,0,3.736-2.989c1.6-2.259,1.868-5.195,2.01-7.881q.053-1.334.053-2.669V50.2h-4.518Z" transform="translate(-299.715 -39.619)" fill="currentColor"/><path d="M30.46,0a11.075,11.075,0,0,0-9.573,5.535L19.021,8.777,17.155,5.535A11.071,11.071,0,0,0,7.583,0H0L9.639,16.745a11.01,11.01,0,0,0,2.905,3.287L4.292,34.371h7.584a11.071,11.071,0,0,0,9.571-5.535l1.391-2.413A11.049,11.049,0,0,0,24.3,20.934,10.387,10.387,0,0,0,28.22,17.07L38.044,0ZM12,15.382,4.724,2.732H7.584a8.332,8.332,0,0,1,7.2,4.166l2.657,4.618-3.519,6.116A8.262,8.262,0,0,1,12,15.382M20.47,25.06l-1.391,2.413a8.33,8.33,0,0,1-7.2,4.166H9.016L14.909,21.4a11.009,11.009,0,0,0,4.3.88A10.3,10.3,0,0,0,21.5,22,8.3,8.3,0,0,1,20.47,25.06M19.02,19.473a8.53,8.53,0,0,1-2.743-.453l2.742-4.763h0v0l2.741,4.765a8.529,8.529,0,0,1-2.742.453m6.831-3.766a7.634,7.634,0,0,1-1.961,2.24A10.981,10.981,0,0,0,22.836,15.4L21.449,13h0l-.852-1.48L23.256,6.9a8.332,8.332,0,0,1,7.2-4.166H33.32L25.851,15.707" fill="#00bab2"/><path d="M694.641,23.4a.552.552,0,0,0-.12-.08,1.184,1.184,0,0,0,.35-.18.9.9,0,0,0,.349-.758.97.97,0,0,0-.372-.81,1.526,1.526,0,0,0-.966-.29h-1.249v3.553h.654V23.6h.282a.8.8,0,0,1,.49.126,1.311,1.311,0,0,1,.327.468l.267.639h.773l-.372-.818a2.006,2.006,0,0,0-.416-.617m-.3-.528a.967.967,0,0,1-.542.134h-.505v-1.07h.595q.654,0,.654.535a.45.45,0,0,1-.2.4" transform="translate(-546.651 -16.796)" fill="currentColor"/><path d="M688.065,14.664a3.616,3.616,0,0,0-1.286-1.293,3.576,3.576,0,0,0-3.59,0,3.693,3.693,0,0,0-1.286,1.293,3.457,3.457,0,0,0-.483,1.806,3.5,3.5,0,0,0,.483,1.813,3.671,3.671,0,0,0,1.286,1.3,3.576,3.576,0,0,0,3.59,0,3.6,3.6,0,0,0,1.286-1.3,3.541,3.541,0,0,0,.476-1.813,3.5,3.5,0,0,0-.476-1.806m-.654,3.255a2.848,2.848,0,0,1-1.011,1.033,2.8,2.8,0,0,1-2.839,0,2.842,2.842,0,0,1-1.383-2.482,2.785,2.785,0,0,1,.379-1.434A2.907,2.907,0,0,1,683.576,14a2.774,2.774,0,0,1,2.824,0,2.931,2.931,0,0,1,1.011,3.917" transform="translate(-537.802 -10.172)" fill="currentColor"/></g></svg>`;
+const rsPowered=(x="")=>`<a class="rs-pw ${x}" href="https://www.wylth.com/" target="_blank" rel="noopener" data-notr aria-label="Powered by Wylth (opens wylth.com)"><span>Powered by</span>${RS_WYLTH}</a>`;
 const RS_COL=["#2563eb","#16a34a","#f59e0b","#db2777","#0891b2"];
 const RS_COLS=[
   {k:"cat",l:"Category",d:1},{k:"star",l:"Rating",d:1},{k:"nav",l:"NAV",d:1},{k:"aum",l:"AUM (Cr)",d:1},
@@ -407,7 +418,7 @@ function pageResearch(){
   const cur=rsTabRoute(),ta=rsTa();
   const body=cur==="market-signals"?rsSignals():cur==="mf-compare"?rsCompare():cur==="portfolio-iq"?rsPortfolio():rsScreener();
   return`<div class="page rs"><div class="wrap">
-    <div class="sec-h"><div><h1 style="font-size:30px">Research <em>360</em></h1><p class="muted" style="margin:4px 0 0">Market signals, screeners and portfolio insights in one place.</p></div><span class="rs-asof" data-notr>Data as of ${RS_ASOF} · Prototype</span></div>
+    <div class="sec-h"><div><h1 style="font-size:30px">Research <em>360</em></h1><p class="muted" style="margin:4px 0 0">Market signals, screeners and portfolio insights in one place.</p></div><div class="rs-hr">${rsPowered("lg")}<span class="rs-asof" data-notr>Data as of ${RS_ASOF} · Prototype</span></div></div>
     <div class="rs-tabs" role="tablist">${RS_TABS.map(t=>`<button type="button" role="tab" aria-selected="${t.r===cur}" class="rs-tb ${t.cls}${t.r===cur?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic}</span><span><b>${ta?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("")}</div>
     <div id="rs-body">${body}</div>
     <p class="rs-note">Prototype with sample data for investor education. Fund figures, ratings and market series are illustrative and may not match current values. Past performance may or may not be sustained in future. Mutual Fund investments are subject to market risks, read all scheme related documents carefully. This is not a recommendation to buy or sell any scheme.</p>
@@ -427,7 +438,7 @@ function rsFiltered(){
 function rsScreener(){
   const cats=[...new Set(RS_FUNDS.filter(f=>!RS.cls||f.cls===RS.cls).map(f=>f.cat))].sort(),amcs=[...new Set(RS_FUNDS.map(f=>f.amc))].sort();
   return`<div class="rs-card">
-    <div class="rs-ch"><div><h3>MF Screener</h3><p class="sub" style="margin:0">Filter and discover mutual funds using performance and risk metrics.</p></div></div>
+    <div class="rs-ch"><div><h3>MF Screener</h3><p class="sub" style="margin:0">Filter and discover mutual funds using performance and risk metrics.</p></div>${rsPowered()}</div>
     <div class="rs-bar"><label class="search-in"><span class="sr">Search funds</span>${RS_I.search}<input id="rsq" type="search" placeholder="Search for funds, AMC or category" value="${rsE(RS.q)}" autocomplete="off"></label>
       <select class="inp" id="rscat" aria-label="Category"><option value="">All categories</option>${cats.map(c=>`<option ${c===RS.cat?"selected":""}>${rsE(c)}</option>`).join("")}</select>
       <select class="inp" id="rsamc" aria-label="AMC"><option value="">All AMCs</option>${amcs.map(c=>`<option ${c===RS.amc?"selected":""}>${rsE(c)}</option>`).join("")}</select>
@@ -488,7 +499,7 @@ function rsGrowth(f){
 function rsCompare(){
   const fs=RS.cmp.map(rsF).filter(Boolean);
   const search=`<div class="rs-bar"><div class="rs-sw"><label class="search-in"><span class="sr">Search funds to compare</span>${RS_I.search}<input id="rscq" type="search" placeholder="${fs.length>=5?"Remove a fund to add another":"Search and add up to 5 mutual funds to compare"}" value="${rsE(RS.cmpQ)}" autocomplete="off" ${fs.length>=5?"disabled":""}></label><div id="rs-csug">${rsSug(RS.cmpQ,RS.cmp,"rs-cadd")}</div></div>${fs.length?'<button type="button" class="btn btn-ghost btn-sm" data-act="rs-cclear">Clear all</button>':""}</div>`;
-  const head=`<div class="rs-card"><div class="rs-ch"><div><h3>MF Compare</h3><p class="sub" style="margin:0">Compare multiple mutual funds across performance, allocation and portfolio overlap.</p></div></div>${search}
+  const head=`<div class="rs-card"><div class="rs-ch"><div><h3>MF Compare</h3><p class="sub" style="margin:0">Compare multiple mutual funds across performance, allocation and portfolio overlap.</p></div>${rsPowered()}</div>${search}
     ${fs.length?`<div class="rs-sel" data-notr>${fs.map((f,i)=>`<span class="c"><i class="rs-dot" style="background:${RS_COL[i]}"></i><span>${rsE(f.n)}</span><button type="button" data-act="rs-cmp" data-v="${f.id}" aria-label="Remove ${rsE(f.n)}">×</button></span>`).join("")}</div>`:""}</div>`;
   if(!fs.length)return head+`<div class="rs-empty" style="margin-top:16px"><div class="ill">${RS_TABS[2].ic.replace("<svg",'<svg width="30" height="30"')}</div><h3>Select 1-5 funds to analyze performance and overlap</h3><p>Use the search to build a set of funds, then compare performance and overlap together. Or start with a popular comparison.</p><div class="rs-quick">${RS_QUICK.map((q,i)=>`<button type="button" class="pill" data-act="rs-quick" data-v="${i}">${q.l}</button>`).join("")}</div></div>`;
   const P=["1M","3M","6M","1Y","3Y","5Y"],best=i=>Math.max(...fs.map(f=>f.r[i]));
@@ -556,7 +567,7 @@ function rsSignals(){
   const pct=Math.round(pe.filter(p=>p.v<lpe).length/pe.length*100),y52=n.slice(-52),hi=Math.max(...y52.map(p=>p.v)),fromHi=(last/hi-1)*100;
   const ey=100/lpe,gsec=6.48,pos=Math.max(0,Math.min(100,(lpe-14)/(28-14)*100));
   return`<div class="rs-sig">
-    <div class="rs-card"><div class="rs-ch"><div><h3 style="display:flex;gap:10px;align-items:center">Market Signals <span class="rs-zone" style="background:${z.c}">● ${z.l}</span></h3><p class="sub" style="margin:4px 0 0">Track key market indicators and signals to guide investment decisions.</p></div></div>
+    <div class="rs-card"><div class="rs-ch"><div><h3 style="display:flex;gap:10px;align-items:center">Market Signals <span class="rs-zone" style="background:${z.c}">● ${z.l}</span></h3><p class="sub" style="margin:4px 0 0">Track key market indicators and signals to guide investment decisions.</p></div>${rsPowered()}</div>
       <div class="rs-gauge" role="img" aria-label="Nifty PE ${lpe} on a valuation scale"><span class="m" style="left:${pos}%"></span></div>
       <div class="rs-gl" data-notr><span>Cheap &lt;18</span><span>Fair 18–22</span><span>Expensive 22–25</span><span>25+</span></div></div>
     <div class="rs-card" data-notr><span class="muted" style="font-size:13px;font-weight:700">Nifty 50 (${RS_ASOF})</span><div class="rs-big" style="margin-top:8px">${rsNum(last,1)}<small>${rsPct(RS_MARKET.niftyChg,1)}</small></div><p class="muted" style="font-size:13px;margin:8px 0 0">${fromHi.toFixed(1)}% from its 52-week high of ${rsNum(hi,0)}</p></div>
@@ -701,7 +712,7 @@ function rsCasHelp(){
 
 function rsPortfolio(){
   const P=RS.piq,L=RS.lead,gate=!L||P.editGate;
-  const head=`<div class="rs-card"><div class="rs-ch"><div><h3>MF Portfolio IQ</h3><p class="sub" style="margin:0">Analyse portfolios for health score, fund overlap, asset allocation and rebalancing ideas.</p></div></div>${gate?rsGate():rsUploads()}</div>`;
+  const head=`<div class="rs-card"><div class="rs-ch"><div><h3>MF Portfolio IQ</h3><p class="sub" style="margin:0">Analyse portfolios for health score, fund overlap, asset allocation and rebalancing ideas.</p></div>${rsPowered()}</div>${gate?rsGate():rsUploads()}</div>`;
   if(gate||!RS.pf.length)return head+(gate&&!L?`<div class="rs-empty" style="margin-top:16px;text-align:left"><h3>What you get</h3><ul class="rs-acts" style="max-width:640px;margin:10px auto 0"><li>A health score out of 100 for your whole portfolio</li><li>Overlap between your funds and the stocks you really own</li><li>Your true mix of equity, debt and gold</li><li>Rebalancing ideas for your risk profile</li></ul></div>`:"");
   const a=rsAnalyse();
   const inMfd=L.isMfd&&RS.pf.some(h=>h.arn);
@@ -740,7 +751,7 @@ function rsPortfolio(){
 /* ---------- home band, nav and routing ---------- */
 
 function rsHomeBand(){
-  return`<section class="band rs-home"><div class="wrap"><div class="sec-h"><div><h2>Research <em>360</em></h2><p class="muted" style="margin:6px 0 0">Screen, compare and check mutual funds with simple tools.</p></div><button type="button" class="btn btn-ghost" data-act="go" data-r="mf-screener">Open Research ${RS_I.arrow}</button></div>
+  return`<section class="band rs-home"><div class="wrap"><div class="sec-h"><div><h2>Research <em>360</em></h2><p class="muted" style="margin:6px 0 0">Screen, compare and check mutual funds with simple tools.</p></div><div class="rs-hr">${rsPowered()}<button type="button" class="btn btn-ghost" data-act="go" data-r="mf-screener">Open Research ${RS_I.arrow}</button></div></div>
     <div class="rs-hgrid">${RS_TABS.map(t=>`<button type="button" class="rs-hc ${t.cls}" data-act="go" data-r="${t.r}"><span class="i">${t.ic.replace("<svg",'<svg width="22" height="22"')}</span><b>${rsTa()?t.ta:t.en}</b><small>${t.d}</small><span class="go">Open →</span></button>`).join("")}</div></div></section>`
 }
 
@@ -749,7 +760,7 @@ function rsMenu(){
   if(!m){m=document.createElement("div");m.id="rs-menu";m.setAttribute("role","menu");document.body.appendChild(m);
     m.addEventListener("mouseenter",()=>clearTimeout(rsMenu.t));m.addEventListener("mouseleave",rsMenuHide)}
   const cur=rsTabRoute();
-  m.innerHTML=RS_TABS.map(t=>`<button type="button" role="menuitem" class="${t.cls}${UI.route===t.r?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic.replace("<svg",'<svg width="20" height="20"')}</span><span><b>${rsTa()?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("");
+  m.innerHTML=RS_TABS.map(t=>`<button type="button" role="menuitem" class="${t.cls}${UI.route===t.r?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic.replace("<svg",'<svg width="20" height="20"')}</span><span><b>${rsTa()?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("")+`<div class="rs-mpw">${rsPowered()}</div>`;
   return m
 }
 function rsMenuShow(a){clearTimeout(rsMenu.t);const m=rsMenu(),r=a.getBoundingClientRect();m.style.top=r.bottom+6+"px";m.style.left=Math.max(8,Math.min(innerWidth-338,r.left))+"px";m.classList.add("open")}
