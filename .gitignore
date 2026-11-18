@@ -1,3 +1,7 @@
 # Local editor and tooling settings
 .claude/
 .DS_Store
+
+# Credentials for the Research 360 embed (never commit)
+.env
+.env.*

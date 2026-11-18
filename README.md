@@ -16,13 +16,39 @@ Fund and market figures are sample data for the prototype.
 
 ## Run it
 
-Serve the folder with any static server, for example:
-
 ```bash
-python3 -m http.server 5173
+node dev-server.js
 ```
 
 Then open http://localhost:5173/#mf-screener. The site's own content (news, articles, videos) loads live from its Supabase backend.
+
+`dev-server.js` serves the site and runs the `api/` functions the way Vercel does. You need Node 18 or later; there are no packages to install.
+
+## Live Research 360 (Wylth embed)
+
+MF Screener, Market Signals and MF Compare show Wylth's live Research 360 in an iframe, signed in with a one-time code. Visitors never log in, and the Wylth secret never reaches the browser.
+
+- `api/research360-url.js` runs on the server. It gets a 24-hour access token from Wylth and caches it. For each visit, it gets a one-time code and returns the iframe address, with `Cache-Control: no-store`.
+- `js/research.js` loads the iframe once and keeps it alive while visitors move around the site, so moving between pages doesn't use up codes. It gets a fresh code when Wylth reports the session ended (`EMBED_AUTH_FAILED`).
+- Without credentials, or with no `api/` endpoint (for example on a plain static host), the sample-data tools show instead.
+
+**Local:** put the credentials in `.env.local`, which is git-ignored:
+
+```
+WYLTH_PARTNER_ID=<partner account ID from Wylth>
+WYLTH_PARTNER_SECRET=<secret from Wylth>
+```
+
+**Production (Vercel):** add these as Environment Variables in the project settings, never in code:
+
+| Variable | Value |
+|---|---|
+| `WYLTH_PARTNER_ID` | Partner account ID from Wylth |
+| `WYLTH_PARTNER_SECRET` | Secret from Wylth (mark it Sensitive) |
+| `R360_ALLOWED_ORIGINS` | `https://www.muthaleetuthisai.com,https://muthaleetuthisai.com` |
+| `R360_PER_IP_PER_MIN` | Optional; default 6 codes a minute per visitor |
+
+Wylth allows 60 codes a minute for the whole account. Tell Wylth the expected peak traffic and the site's domains before launch.
 
 ## Where things are
 

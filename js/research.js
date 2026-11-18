@@ -258,6 +258,18 @@
 .rs-pw.lg .wl{height:18px}
 .rs-hr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .rs-mpw{display:flex;justify-content:flex-end;border-top:1px solid var(--line);margin-top:6px;padding:8px 4px 2px}
+.rs-tabs.two{grid-template-columns:2fr 1fr}
+.rs-livepg{padding-bottom:12px!important}
+.rs-livedot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:6px;box-shadow:0 0 0 3px rgba(22,163,74,.18)}
+.r360-host{padding:0 0 36px}
+.r360-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px;font-size:13.5px;color:var(--muted)}
+.r360-bar b{color:var(--ink-2)}
+.r360-frame{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.r360-frame iframe{display:block;width:100%;height:calc(100vh - 240px);min-height:640px;border:0}
+.r360-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--surface);color:var(--muted);font-size:14px;font-weight:600;text-align:center;padding:20px}
+.r360-state[hidden]{display:none}
+.r360-spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:r360spin .8s linear infinite}
+@keyframes r360spin{to{transform:rotate(360deg)}}
 #rs-menu{position:fixed;z-index:60;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;width:330px;display:none}
 #rs-menu.open{display:block}
 #rs-menu button{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:center;width:100%;text-align:left;border:0;background:transparent;color:inherit;font:inherit;padding:10px;border-radius:12px;cursor:pointer}
@@ -313,7 +325,8 @@ const RS={
   pf:rsLoad("pf",[]),
   // Portfolio IQ: details gate, then up to three CAS files ({file,pwd,ok,err}), then the analysis
   piq:{files:[],busy:!1,err:"",gate:null,gateErr:"",editGate:!1,addMore:!1,scope:"both",prof:"moderate"},
-  lead:rsLoad("lead",null),stmt:rsLoad("stmt",null)
+  lead:rsLoad("lead",null),stmt:rsLoad("stmt",null),
+  live:"unknown"
 };
 const RS_CH={};
 
@@ -414,16 +427,62 @@ function rsDonut(parts){
 
 function rsTabRoute(){const r=UI.route;return r==="research"?"mf-screener":r}
 
+// Live mode: MF Screener, Market Signals and MF Compare come from Wylth Research 360 in an iframe
+// (#r360Host, kept alive across routes). RS.live: "unknown" until /api/research360-url answers,
+// "on", "error", or "off" when the site has no endpoint or credentials (then the sample tools show).
+const RS_LIVE_ROUTES=["research","mf-screener","market-signals","mf-compare"];
+const rsLiveRoute=()=>RS_LIVE_ROUTES.includes(UI.route)&&RS.live!=="off";
+const RS_LIVE_TAB={r:"mf-screener",cls:"t1",en:"Research 360",ta:"ஆய்வு 360",d:"MF Screener, Market Signals and MF Compare, live",ic:RS_TABS[0].ic};
+
 function pageResearch(){
-  const cur=rsTabRoute(),ta=rsTa();
-  const body=cur==="market-signals"?rsSignals():cur==="mf-compare"?rsCompare():cur==="portfolio-iq"?rsPortfolio():rsScreener();
-  return`<div class="page rs"><div class="wrap">
-    <div class="sec-h"><div><h1 style="font-size:30px">Research <em>360</em></h1><p class="muted" style="margin:4px 0 0">Market signals, screeners and portfolio insights in one place.</p></div><div class="rs-hr">${rsPowered("lg")}<span class="rs-asof" data-notr>Data as of ${RS_ASOF} · Prototype</span></div></div>
-    <div class="rs-tabs" role="tablist">${RS_TABS.map(t=>`<button type="button" role="tab" aria-selected="${t.r===cur}" class="rs-tb ${t.cls}${t.r===cur?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic}</span><span><b>${ta?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("")}</div>
+  const cur=rsTabRoute(),ta=rsTa(),live=rsLiveRoute()||RS.live==="on";
+  const tabs=live?[RS_LIVE_TAB,RS_TABS[3]]:RS_TABS,onTab=t=>live&&t===RS_LIVE_TAB?rsLiveRoute():t.r===cur;
+  const body=rsLiveRoute()?"":cur==="market-signals"?rsSignals():cur==="mf-compare"?rsCompare():cur==="portfolio-iq"?rsPortfolio():rsScreener();
+  return`<div class="page rs${rsLiveRoute()?" rs-livepg":""}"><div class="wrap">
+    <div class="sec-h"><div><h1 style="font-size:30px">Research <em>360</em></h1><p class="muted" style="margin:4px 0 0">Market signals, screeners and portfolio insights in one place.</p></div><div class="rs-hr">${rsPowered("lg")}<span class="rs-asof" data-notr>${live?'<i class="rs-livedot"></i>Live data':"Data as of "+RS_ASOF+" · Prototype"}</span></div></div>
+    <div class="rs-tabs${live?" two":""}" role="tablist">${tabs.map(t=>`<button type="button" role="tab" aria-selected="${onTab(t)}" class="rs-tb ${t.cls}${onTab(t)?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic}</span><span><b>${ta?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("")}</div>
     <div id="rs-body">${body}</div>
-    <p class="rs-note">Prototype with sample data for investor education. Fund figures, ratings and market series are illustrative and may not match current values. Past performance may or may not be sustained in future. Mutual Fund investments are subject to market risks, read all scheme related documents carefully. This is not a recommendation to buy or sell any scheme.</p>
+    ${rsLiveRoute()?"":'<p class="rs-note">'+(live?"Portfolio IQ uses sample fund data for the analysis.":"Prototype with sample data for investor education. Fund figures, ratings and market series are illustrative and may not match current values.")+" Past performance may or may not be sustained in future. Mutual Fund investments are subject to market risks, read all scheme related documents carefully. This is not a recommendation to buy or sell any scheme.</p>"}
   </div></div>`
 }
+
+// Shows or hides the Research 360 frame after every render, loading it the first time it's needed.
+function rsLiveSync(){
+  const host=document.getElementById("r360Host");if(!host)return;
+  const show=rsLiveRoute();host.hidden=!show;
+  if(!show||host.dataset.ready)return;
+  host.dataset.ready="1";
+  host.innerHTML=`<div class="wrap"><div class="r360-bar"><span>Switch between <b>MF Screener</b>, <b>Market Signals</b> and <b>MF Compare</b> using the tabs inside.</span></div>
+    <div class="r360-frame"><div class="r360-state" id="r360State" role="status"><span class="r360-spin" aria-hidden="true"></span><span>Loading Research 360…</span></div>
+    <iframe id="r360Frame" title="Research 360 by Wylth: MF Screener, Market Signals and MF Compare" allow="clipboard-write"></iframe></div>
+    <p class="rs-note">Research 360 is provided by Wylth. Past performance may or may not be sustained in future. Mutual Fund investments are subject to market risks, read all scheme related documents carefully. This is not a recommendation to buy or sell any scheme.</p></div>`;
+  document.getElementById("r360Frame").addEventListener("load",()=>{document.getElementById("r360Frame").src&&rsLiveState("")});
+  rsLiveLoad()
+}
+
+function rsLiveState(html){const st=document.getElementById("r360State");st&&(st.hidden=!html,html&&(st.innerHTML=html))}
+
+// Asks the site's server for a one-time Research 360 address. No endpoint or no credentials
+// (404/405/501/503) means this deployment has no live embed: fall back to the sample tools.
+async function rsLiveLoad(){
+  rsLiveState('<span class="r360-spin" aria-hidden="true"></span><span>Loading Research 360…</span>');
+  let res;
+  try{res=await fetch("/api/research360-url",{cache:"no-store",headers:{Accept:"application/json"}})}
+  catch{RS.live="error";rsLiveState('<span>Couldn’t reach Research 360. Check your connection.</span><button type="button" class="btn btn-ghost btn-sm" data-act="rs-liveretry">Try again</button>');return}
+  const j=await res.json().catch(()=>null);
+  if(res.ok&&j&&/^https:\/\/crmv2\.wylth\.com\/embed\/sso\/\?t=/.test(j.src)){RS.live="on";document.getElementById("r360Frame").src=j.src;return}
+  if([404,405,501,503].includes(res.status)){RS.live="off";const h=document.getElementById("r360Host");h&&(h.hidden=!0);render();return}
+  RS.live="error";
+  rsLiveState(`<span>${rsE(j&&j.error||"Research 360 is unavailable right now.")}</span><button type="button" class="btn btn-ghost btn-sm" data-act="rs-liveretry">Try again</button>`)
+}
+
+// Messages from Research 360: a used or expired code, or the 24 h session ending, needs a new code.
+window.addEventListener("message",e=>{
+  if(e.origin!=="https://crmv2.wylth.com"||!e.data)return;
+  if(e.data.type==="EMBED_AUTH_FAILED")rsLiveLoad();
+  else if(e.data.type==="THEME_READY")rsLiveState("")
+});
+
 function rsPaint(){const b=document.getElementById("rs-body");b&&(b.innerHTML=rsTabRoute()==="market-signals"?rsSignals():rsTabRoute()==="mf-compare"?rsCompare():rsTabRoute()==="portfolio-iq"?rsPortfolio():rsScreener())}
 
 /* ---------- MF Screener ---------- */
@@ -785,6 +844,7 @@ function rsMenuHide(){clearTimeout(rsMenu.t);rsMenu.t=setTimeout(()=>{const m=do
   const h=(location.hash||"").slice(1);RS_ROUTES.includes(h)&&UI.route!==h&&setTimeout(()=>go(h),0);
   window.addEventListener("hashchange",()=>{const x=location.hash.slice(1);RS_ROUTES.includes(x)&&UI.route!==x&&go(x)});
   try{renderNav()}catch{}
+  const r0=render;window.render=function(){const out=r0.apply(this,arguments);try{rsLiveSync()}catch{}return out};
   try{UI.route==="home"&&render()}catch{}
 })();
 
@@ -898,6 +958,7 @@ document.addEventListener("click",e=>{
   else if(a==="rs-quick"){rsSetCmp(RS_QUICK[+v].ids);rsPaint()}
   else if(a==="rs-pair"){RS.pair=v.split(",").map(Number);rsPaint()}
   else if(a==="rs-view"||a==="rs-rng"){RS.sig[t.dataset.ch][a==="rs-view"?"view":"rng"]=v;rsPaint()}
+  else if(a==="rs-liveretry")rsLiveLoad();
   else if(a==="rs-gate")rsGateSave();
   else if(a==="rs-gateedit"){RS.piq.editGate=!0;RS.piq.gate=null;RS.piq.gateErr="";rsPaintPiq()}
   else if(a==="rs-gatecancel"){RS.piq.editGate=!1;RS.piq.gateErr="";rsPaintPiq()}
