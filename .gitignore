@@ -5,3 +5,4 @@
 # Credentials for the Research 360 embed (never commit)
 .env
 .env.*
+.vercel

@@ -1,0 +1,5 @@
+# Never upload credentials or local tooling to Vercel
+.env
+.env.*
+.claude
+.git
