@@ -262,6 +262,7 @@
 .rs-by:hover span{color:#00bab2}
 .rs-hr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .rs-mpw{display:flex;justify-content:flex-end;border-top:1px solid var(--line);margin-top:6px;padding:8px 4px 2px}
+@media (min-width:981px){.rs-tabs.n3,.rs-hgrid.n3{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .rs-tabs.two{grid-template-columns:2fr 1fr}
 .rs-livepg{padding-bottom:12px!important}
 .rs-livedot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:6px;box-shadow:0 0 0 3px rgba(22,163,74,.18)}
@@ -300,6 +301,9 @@ const RS_WYLTH=`<svg class="wl" role="img" aria-label="Wylth" xmlns="http://www.
 const rsPowered=(x="")=>`<a class="rs-pw ${x}" href="https://www.wylth.com/" target="_blank" rel="noopener" data-notr aria-label="Powered by Wylth (opens wylth.com)"><span>Powered by</span>${RS_WYLTH}</a>`;
 // The byline under each "Research 360" title: "Powered by" and the Wylth logo, linking to wylth.com.
 const rsByline=()=>`<a class="rs-by" href="https://www.wylth.com/" target="_blank" rel="noopener" data-notr aria-label="Powered by Wylth (opens wylth.com)"><span>Powered by</span>${RS_WYLTH}</a>`;
+// Portfolio IQ is optional: on only when MT_CONFIG.portfolioIQ is true (it also needs research-capture.js).
+const rsPiqOn=()=>!!(window.MT_CONFIG&&window.MT_CONFIG.portfolioIQ);
+const rsTabsOn=()=>RS_TABS.filter(t=>t.r!=="portfolio-iq"||rsPiqOn());
 const RS_COL=["#2563eb","#16a34a","#f59e0b","#db2777","#0891b2"];
 const RS_COLS=[
   {k:"cat",l:"Category",d:1},{k:"star",l:"Rating",d:1},{k:"nav",l:"NAV",d:1},{k:"aum",l:"AUM (Cr)",d:1},
@@ -442,11 +446,11 @@ const RS_LIVE_TAB={r:"mf-screener",cls:"t1",en:"Research 360",ta:"ஆய்வ�
 
 function pageResearch(){
   const cur=rsTabRoute(),ta=rsTa(),live=rsLiveRoute()||RS.live==="on";
-  const tabs=live?[RS_LIVE_TAB,RS_TABS[3]]:RS_TABS,onTab=t=>live&&t===RS_LIVE_TAB?rsLiveRoute():t.r===cur;
+  const tabs=live?(rsPiqOn()?[RS_LIVE_TAB,RS_TABS[3]]:[]):rsTabsOn(),onTab=t=>live&&t===RS_LIVE_TAB?rsLiveRoute():t.r===cur;
   const body=rsLiveRoute()?"":cur==="market-signals"?rsSignals():cur==="mf-compare"?rsCompare():cur==="portfolio-iq"?rsPortfolio():rsScreener();
   return`<div class="page rs${rsLiveRoute()?" rs-livepg":""}"><div class="wrap">
-    <div class="sec-h"><div><h1 style="font-size:30px">Research <em>360</em></h1>${rsByline()}<p class="muted" style="margin:10px 0 0">Market signals, screeners and portfolio insights in one place.</p></div><div class="rs-hr"><span class="rs-asof" data-notr>${live?'<i class="rs-livedot"></i>Live data':"Data as of "+RS_ASOF+" · Prototype"}</span></div></div>
-    <div class="rs-tabs${live?" two":""}" role="tablist">${tabs.map(t=>`<button type="button" role="tab" aria-selected="${onTab(t)}" class="rs-tb ${t.cls}${onTab(t)?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic}</span><span><b>${ta?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("")}</div>
+    <div class="sec-h"><div><h1 style="font-size:30px">Research <em>360</em></h1>${rsByline()}<p class="muted" style="margin:10px 0 0">${rsPiqOn()?"Market signals, screeners and portfolio insights in one place.":"Market signals, fund screening and fund comparison in one place."}</p></div><div class="rs-hr"><span class="rs-asof" data-notr>${live?'<i class="rs-livedot"></i>Live data':"Data as of "+RS_ASOF+" · Prototype"}</span></div></div>
+    <div class="rs-tabs${live?" two":""} n${tabs.length}" role="tablist"${tabs.length?"":" hidden"}>${tabs.map(t=>`<button type="button" role="tab" aria-selected="${onTab(t)}" class="rs-tb ${t.cls}${onTab(t)?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic}</span><span><b>${ta?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("")}</div>
     <div id="rs-body">${body}</div>
     ${rsLiveRoute()?"":'<p class="rs-note">'+(live?"Portfolio IQ uses sample fund data for the analysis.":"Prototype with sample data for investor education. Fund figures, ratings and market series are illustrative and may not match current values.")+" Past performance may or may not be sustained in future. Mutual Fund investments are subject to market risks, read all scheme related documents carefully. This is not a recommendation to buy or sell any scheme.</p>"}
   </div></div>`
@@ -817,7 +821,7 @@ function rsPortfolio(){
 
 function rsHomeBand(){
   return`<section class="band rs-home"><div class="wrap"><div class="sec-h"><div><h2>Research <em>360</em></h2>${rsByline()}<p class="muted" style="margin:10px 0 0">Screen, compare and check mutual funds with simple tools.</p></div><div class="rs-hr"><button type="button" class="btn btn-ghost" data-act="go" data-r="mf-screener">Open Research ${RS_I.arrow}</button></div></div>
-    <div class="rs-hgrid">${RS_TABS.map(t=>`<button type="button" class="rs-hc ${t.cls}" data-act="go" data-r="${t.r}"><span class="i">${t.ic.replace("<svg",'<svg width="22" height="22"')}</span><b>${rsTa()?t.ta:t.en}</b><small>${t.d}</small><span class="go">Open →</span></button>`).join("")}</div></div></section>`
+    <div class="rs-hgrid n${rsTabsOn().length}">${rsTabsOn().map(t=>`<button type="button" class="rs-hc ${t.cls}" data-act="go" data-r="${t.r}"><span class="i">${t.ic.replace("<svg",'<svg width="22" height="22"')}</span><b>${rsTa()?t.ta:t.en}</b><small>${t.d}</small><span class="go">Open →</span></button>`).join("")}</div></div></section>`
 }
 
 function rsMenu(){
@@ -825,7 +829,7 @@ function rsMenu(){
   if(!m){m=document.createElement("div");m.id="rs-menu";m.setAttribute("role","menu");document.body.appendChild(m);
     m.addEventListener("mouseenter",()=>clearTimeout(rsMenu.t));m.addEventListener("mouseleave",rsMenuHide)}
   const cur=rsTabRoute();
-  m.innerHTML=RS_TABS.map(t=>`<button type="button" role="menuitem" class="${t.cls}${UI.route===t.r?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic.replace("<svg",'<svg width="20" height="20"')}</span><span><b>${rsTa()?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("")+`<div class="rs-mpw">${rsPowered()}</div>`;
+  m.innerHTML=rsTabsOn().map(t=>`<button type="button" role="menuitem" class="${t.cls}${UI.route===t.r?" on":""}" data-act="go" data-r="${t.r}"><span class="i">${t.ic.replace("<svg",'<svg width="20" height="20"')}</span><span><b>${rsTa()?t.ta:t.en}</b><small>${t.d}</small></span></button>`).join("")+`<div class="rs-mpw">${rsPowered()}</div>`;
   return m
 }
 function rsMenuShow(a){clearTimeout(rsMenu.t);const m=rsMenu(),r=a.getBoundingClientRect();m.style.top=r.bottom+6+"px";m.style.left=Math.max(8,Math.min(innerWidth-338,r.left))+"px";m.classList.add("open")}
@@ -846,7 +850,7 @@ function rsMenuHide(){clearTimeout(rsMenu.t);rsMenu.t=setTimeout(()=>{const m=do
     if(a){RS_ROUTES.includes(UI.route)&&a.classList.add("on");a.setAttribute("aria-haspopup","menu");a.insertAdjacentHTML("beforeend",RS_I.chev);
       a.addEventListener("mouseenter",()=>rsMenuShow(a));a.addEventListener("mouseleave",rsMenuHide);a.addEventListener("focus",()=>rsMenuShow(a))}
     return out};
-  const go0=go;window.go=function(r){const m=document.getElementById("rs-menu");m&&m.classList.remove("open");return go0.call(this,r==="research"?"mf-screener":r)};
+  const go0=go;window.go=function(r){const m=document.getElementById("rs-menu");m&&m.classList.remove("open");return go0.call(this,r==="research"||(r==="portfolio-iq"&&!rsPiqOn())?"mf-screener":r)};
   const h=(location.hash||"").slice(1);RS_ROUTES.includes(h)&&UI.route!==h&&setTimeout(()=>go(h),0);
   window.addEventListener("hashchange",()=>{const x=location.hash.slice(1);RS_ROUTES.includes(x)&&UI.route!==x&&go(x)});
   try{renderNav()}catch{}
