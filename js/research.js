@@ -503,7 +503,7 @@ function rsFiltered(){
 function rsScreener(){
   const cats=[...new Set(RS_FUNDS.filter(f=>!RS.cls||f.cls===RS.cls).map(f=>f.cat))].sort(),amcs=[...new Set(RS_FUNDS.map(f=>f.amc))].sort();
   return`<div class="rs-card">
-    <div class="rs-ch"><div><h3>MF Screener</h3><p class="sub" style="margin:0">Filter and discover mutual funds using performance and risk metrics.</p></div>${rsPowered()}</div>
+    <div class="rs-ch"><div><h3>MF Screener</h3><p class="sub" style="margin:0">Filter and discover mutual funds using performance and risk metrics.</p></div></div>
     <div class="rs-bar"><label class="search-in"><span class="sr">Search funds</span>${RS_I.search}<input id="rsq" type="search" placeholder="Search for funds, AMC or category" value="${rsE(RS.q)}" autocomplete="off"></label>
       <select class="inp" id="rscat" aria-label="Category"><option value="">All categories</option>${cats.map(c=>`<option ${c===RS.cat?"selected":""}>${rsE(c)}</option>`).join("")}</select>
       <select class="inp" id="rsamc" aria-label="AMC"><option value="">All AMCs</option>${amcs.map(c=>`<option ${c===RS.amc?"selected":""}>${rsE(c)}</option>`).join("")}</select>
@@ -564,7 +564,7 @@ function rsGrowth(f){
 function rsCompare(){
   const fs=RS.cmp.map(rsF).filter(Boolean);
   const search=`<div class="rs-bar"><div class="rs-sw"><label class="search-in"><span class="sr">Search funds to compare</span>${RS_I.search}<input id="rscq" type="search" placeholder="${fs.length>=5?"Remove a fund to add another":"Search and add up to 5 mutual funds to compare"}" value="${rsE(RS.cmpQ)}" autocomplete="off" ${fs.length>=5?"disabled":""}></label><div id="rs-csug">${rsSug(RS.cmpQ,RS.cmp,"rs-cadd")}</div></div>${fs.length?'<button type="button" class="btn btn-ghost btn-sm" data-act="rs-cclear">Clear all</button>':""}</div>`;
-  const head=`<div class="rs-card"><div class="rs-ch"><div><h3>MF Compare</h3><p class="sub" style="margin:0">Compare multiple mutual funds across performance, allocation and portfolio overlap.</p></div>${rsPowered()}</div>${search}
+  const head=`<div class="rs-card"><div class="rs-ch"><div><h3>MF Compare</h3><p class="sub" style="margin:0">Compare multiple mutual funds across performance, allocation and portfolio overlap.</p></div></div>${search}
     ${fs.length?`<div class="rs-sel" data-notr>${fs.map((f,i)=>`<span class="c"><i class="rs-dot" style="background:${RS_COL[i]}"></i><span>${rsE(f.n)}</span><button type="button" data-act="rs-cmp" data-v="${f.id}" aria-label="Remove ${rsE(f.n)}">×</button></span>`).join("")}</div>`:""}</div>`;
   if(!fs.length)return head+`<div class="rs-empty" style="margin-top:16px"><div class="ill">${RS_TABS[2].ic.replace("<svg",'<svg width="30" height="30"')}</div><h3>Select 1-5 funds to analyze performance and overlap</h3><p>Use the search to build a set of funds, then compare performance and overlap together. Or start with a popular comparison.</p><div class="rs-quick">${RS_QUICK.map((q,i)=>`<button type="button" class="pill" data-act="rs-quick" data-v="${i}">${q.l}</button>`).join("")}</div></div>`;
   const P=["1M","3M","6M","1Y","3Y","5Y"],best=i=>Math.max(...fs.map(f=>f.r[i]));
@@ -632,7 +632,7 @@ function rsSignals(){
   const pct=Math.round(pe.filter(p=>p.v<lpe).length/pe.length*100),y52=n.slice(-52),hi=Math.max(...y52.map(p=>p.v)),fromHi=(last/hi-1)*100;
   const ey=100/lpe,gsec=6.48,pos=Math.max(0,Math.min(100,(lpe-14)/(28-14)*100));
   return`<div class="rs-sig">
-    <div class="rs-card"><div class="rs-ch"><div><h3 style="display:flex;gap:10px;align-items:center">Market Signals <span class="rs-zone" style="background:${z.c}">● ${z.l}</span></h3><p class="sub" style="margin:4px 0 0">Track key market indicators and signals to guide investment decisions.</p></div>${rsPowered()}</div>
+    <div class="rs-card"><div class="rs-ch"><div><h3 style="display:flex;gap:10px;align-items:center">Market Signals <span class="rs-zone" style="background:${z.c}">● ${z.l}</span></h3><p class="sub" style="margin:4px 0 0">Track key market indicators and signals to guide investment decisions.</p></div></div>
       <div class="rs-gauge" role="img" aria-label="Nifty PE ${lpe} on a valuation scale"><span class="m" style="left:${pos}%"></span></div>
       <div class="rs-gl" data-notr><span>Cheap &lt;18</span><span>Fair 18–22</span><span>Expensive 22–25</span><span>25+</span></div></div>
     <div class="rs-card" data-notr><span class="muted" style="font-size:13px;font-weight:700">Nifty 50 (${RS_ASOF})</span><div class="rs-big" style="margin-top:8px">${rsNum(last,1)}<small>${rsPct(RS_MARKET.niftyChg,1)}</small></div><p class="muted" style="font-size:13px;margin:8px 0 0">${fromHi.toFixed(1)}% from its 52-week high of ${rsNum(hi,0)}</p></div>
@@ -777,7 +777,7 @@ function rsCasHelp(){
 
 function rsPortfolio(){
   const P=RS.piq,L=RS.lead,gate=!L||P.editGate;
-  const head=`<div class="rs-card"><div class="rs-ch"><div><h3>MF Portfolio IQ</h3><p class="sub" style="margin:0">Analyse portfolios for health score, fund overlap, asset allocation and rebalancing ideas.</p></div>${rsPowered()}</div>${gate?rsGate():rsUploads()}</div>`;
+  const head=`<div class="rs-card"><div class="rs-ch"><div><h3>MF Portfolio IQ</h3><p class="sub" style="margin:0">Analyse portfolios for health score, fund overlap, asset allocation and rebalancing ideas.</p></div></div>${gate?rsGate():rsUploads()}</div>`;
   if(gate||!RS.pf.length)return head+(gate&&!L?`<div class="rs-empty" style="margin-top:16px;text-align:left"><h3>What you get</h3><ul class="rs-acts" style="max-width:640px;margin:10px auto 0"><li>A health score out of 100 for your whole portfolio</li><li>Overlap between your funds and the stocks you really own</li><li>Your true mix of equity, debt and gold</li><li>Rebalancing ideas for your risk profile</li></ul></div>`:"");
   const a=rsAnalyse();
   const inMfd=L.isMfd&&RS.pf.some(h=>h.arn);
